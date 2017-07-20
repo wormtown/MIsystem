@@ -16,6 +16,9 @@ import org.dom4j.io.XMLWriter;
 
 
 public class XMLUtils {
+	public final static String CONFIG_PATH = "D:/apache-tomcat-CommnowMi8.0.38/apache-tomcat-8.0.38/webapps/CommnowMi/WEB-INF/classes/"; 
+	//public final static String CONFIG_PATH = "D:/Users/zy/workspace/CommnowMi/src/main/resources/"; 
+	public final static String FILE_SERVER_DIRECTORY = "D:/Apache2.2/htdocs/ceshi/autogeneration/"; 
 	
 	/**
 	 * 返回元素文本

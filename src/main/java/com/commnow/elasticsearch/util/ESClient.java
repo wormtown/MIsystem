@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.ParseException;
@@ -16,14 +17,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.admin.cluster.stats.ClusterStatsResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -31,10 +37,10 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import com.commnow.elasticsearch.bussiness.entity.CompanyNews;
@@ -49,15 +55,34 @@ import jxl.write.WriteException;
 
 
 public class ESClient {
-	private TransportClient client;
+	private static TransportClient client;
 	
     @SuppressWarnings({ "resource" })
 	public ESClient(String ipAddress) {
+    	Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
 		try {
-			client = new PreBuiltTransportClient(Settings.EMPTY).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ipAddress),9300));
+			client = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ipAddress),9300));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+	}
+    
+    /**
+	 * 获取客户端
+	 * @return
+	 */
+	@SuppressWarnings("resource")
+	public static Client getClient() {
+		if(client!=null){
+			return client;
+		}
+		Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+		try {
+			client = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("103.36.136.225"),9300));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return client;
 	}
     
     /**
@@ -417,15 +442,15 @@ public class ESClient {
     	try{	
 	    		File dir = new File(directory);
 	    		if (dir.exists()) {// 判断目录是否存在
-	    			fileWrite = new File(directory+fileName+"news.html");
+	    			fileWrite = new File(directory+fileName+".html");
 	    			
 	    		}
 	    		if (!directory.endsWith(File.separator)) {// 结尾是否以"/"结束
 	    			directory = directory + File.separator;
-	    			fileWrite = new File(directory+fileName+"news.html");
+	    			fileWrite = new File(directory+fileName+".html");
 	    		}
 	    		if (dir.mkdirs()) {// 创建目标目录
-	    			fileWrite = new File(directory+fileName+"news.html");
+	    			fileWrite = new File(directory+fileName+".html");
 	    		}else {
 	    			System.out.println("创建目录失败！");
 	    			
@@ -481,8 +506,116 @@ public class ESClient {
     	}
 		
 	}
+	
+	/**
+	 * 将实体转换成json
+	 * 
+	 * @param entity 实体
+	 * @param fieldNameParm 实体中待转换成json的字段
+	 * @return 返回json
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unused")
+	private static XContentBuilder createEntityJson(Object entity, String... methodNameParm) throws Exception {
+		// 创建json对象, 其中一个创建json的方式
+		XContentBuilder source = XContentFactory.jsonBuilder().startObject();
+
+		try {
+			for (String methodName : methodNameParm) {
+
+				if (!methodName.startsWith("get")) {
+					throw new Exception("不是有效的属性！");
+				}
+
+				Method method = entity.getClass().getMethod(methodName, null);
+				String fieldValue = (String) method.invoke(entity, null);
+				String fieldName = ESClient.toLowerCaseFirstOne(methodName.replace("get", ""));// 去掉“get”，并将首字母小写
+
+				// 避免和elasticSearch中id字段重复
+				if (fieldName == "_id") {
+					fieldName = "id";
+				}
+
+				source.field(fieldName, fieldValue);
+			}
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+			System.out.println("未找到方法！");
+		}
+
+		source.endObject();
+
+		return source;
+	}
     
+	public static String toLowerCaseFirstOne(String s){
+		  if(Character.isLowerCase(s.charAt(0)))
+		    return s;
+		  else
+		    return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+		}
     
+	/**
+	 * 关键字检索
+	 * @param key
+	 * @param index
+	 * @param type
+	 * @param start
+	 * @param row
+	 * @return
+	 */
+	public static Map<String, Object> search(String key,String index,String type,int start,int row){
+		SearchRequestBuilder builder = getClient().prepareSearch(index);
+		builder.setTypes(type);
+		builder.setFrom(start);
+		builder.setSize(row);
+		//设置高亮字段名称
+		HighlightBuilder highlightBuilder = new HighlightBuilder().field("*").requireFieldMatch(false);
+		highlightBuilder.preTags("<span style=\"color:red\">");
+		highlightBuilder.postTags("</span>");
+		builder.highlighter(highlightBuilder);
+
+		builder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+		if(StringUtils.isNotBlank(key)){
+//			builder.setQuery(QueryBuilders.termQuery("title",key));
+			builder.setQuery(QueryBuilders.multiMatchQuery(key, "title","content"));
+		}
+		builder.setExplain(true);
+		SearchResponse searchResponse = builder.get();
+		
+		SearchHits hits = searchResponse.getHits();
+		long total = hits.getTotalHits();
+		Map<String, Object> map = new HashMap<String,Object>();
+		SearchHit[] hits2 = hits.getHits();
+		map.put("count", total);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		for (SearchHit searchHit : hits2) {
+			Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+			HighlightField highlightField = highlightFields.get("title");
+			Map<String, Object> source = searchHit.getSource();
+			if(highlightField!=null){
+				Text[] fragments = highlightField.fragments();
+				String name = "";
+				for (Text text : fragments) {
+					name+=text;
+				}
+				source.put("title", name);
+			}
+			HighlightField highlightField2 = highlightFields.get("content");
+			if(highlightField2!=null){
+				Text[] fragments = highlightField2.fragments();
+				String content = "";
+				for (Text text : fragments) {
+					content+=text;
+				}
+				source.put("content", content);
+			}
+			list.add(source);
+		}
+		map.put("dataList", list);
+		return map;
+	}
+	
 	public static void main(String[] args){
 //		ElasticsearchVo search = new ElasticsearchVo();
 //		search.setCompany("陶氏");
@@ -492,14 +625,20 @@ public class ESClient {
 //		//search.setFromDate("2017-04-01");
 //		//search.setToDate("2017-05-01");
 //		ESClient.searchFromContentAndWriteExcel(search);
-		ESClient esClient = new ESClient("103.36.136.225");
-		esClient.testGet();
-		esClient.sumSearch();
+//		ESClient esClient = new ESClient("103.36.136.225");
+//		esClient.testGet();
+//		esClient.sumSearch();
 //		
 //		List<CompanyNews> list = esClient.searchNewsList(search, "title");
 //		System.out.println(list);
 //		
+		
+		Map<String, Object> resultMap = ESClient.search("陶氏", "poms", "fetches", 0, 50);
+		List resultList = (List)resultMap.get("dataList");
+		System.out.println(resultList);
 	}
+	
+	
 
 	
 
