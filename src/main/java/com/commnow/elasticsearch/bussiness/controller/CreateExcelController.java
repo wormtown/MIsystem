@@ -21,7 +21,7 @@ public class CreateExcelController {
 	@RequestMapping("/createExcel")
 	@ResponseBody
 	public SearchResult execute(String companyName, String scope, String start, String end, String dir){
-		List<CompanyNews> list = service.searchNews(companyName, scope, start, end);
+		List<CompanyNews> list = service.searchNews(companyName, scope, start, end, 5000);
 		SearchResult result = service.createExcel(list, dir, companyName);
 		return result;
 	}

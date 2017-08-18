@@ -4,7 +4,14 @@ public class ElasticsearchVo {
 	private String company;
 	private String fromDate;
 	private String toDate;
+	private Integer limit;
 	
+	public Integer getLimit() {
+		return limit;
+	}
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
 	public String getCompany() {
 		return company;
 	}

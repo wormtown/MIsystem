@@ -17,20 +17,49 @@
   <meta http-equiv="expires" content="0">
   <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
   <meta http-equiv="description" content="This is my page">
-
+  <script type="text/javascript" src="<%=basePath%>js/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript">
+  $(function(){
+	  $("#select").change(function(){
+	  		console.log('yes');
+	  		var search = $("#select option:selected").val();
+	  		$("form").addClass("hidden");
+	  		$("#"+search).removeClass("hidden");
+	  		
+	  	})
+  })
+  </script>
+  <style type="text/css">
+  	.hidden{
+  		display:none;
+  	}
+  </style> 	
 </head>
 
 <body>
-<form action="qiandu/search.do" method="get">
+<select id="select">
+	<option value="commnow">站内搜索</option>
+	<option value="baidu">百度搜索</option>
+</select>
+<!-- 站内搜索 -->
+<form id="commnow" action="qiandu/search.do" method="get" >
   <input type="text" name="keyWords" />
-  <input type="submit" value="千度一下">
+  <input type="submit" value="传声搜索">
   <input type="hidden" value="1" name="pageNum">
 </form>
+
+<!-- 百度搜索 -->
+<form id="baidu" action="http://www.baidu.com/s" method="get" target="_blank" class="hidden">
+	<input type="text" id="search-input" name="wd" />
+	<input type="submit" value="百度搜索" />
+</form>
+
 <c:if test="${! empty page.list }">
-<h3>千度为您找到相关结果约${total}个</h3>
+<h3>传声为您找到相关结果约${total}个</h3>
 <c:forEach items="${page.list}" var="bean">
   <a href=${bean.url} target="_blank">${bean.title}</a>
   <br/>
+  <span>${bean.publishDate}</span>
   <br/>
   <span>${bean.content}</span>
   <br/>

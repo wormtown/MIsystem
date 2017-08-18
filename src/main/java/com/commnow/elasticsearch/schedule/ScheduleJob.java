@@ -22,7 +22,7 @@ public class ScheduleJob {
 	private static Logger logger = Logger.getLogger(ScheduleJob.class);
 	//private News news = null;
 	
-	@Scheduled(cron="0 20 20 * * ?")
+	@Scheduled(cron="0 27 15 * * ?")
 	public void writeExcelAndPage(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
@@ -41,7 +41,7 @@ public class ScheduleJob {
 				search.setFromDate(today);
 				search.setToDate(tomorrow);
 				search.setCompany(company);
-				List<CompanyNews> newsList = ESClient.searchNewsList(search,"content");
+				List<CompanyNews> newsList = ESClient.searchNewsList(search,"content",5000);
 				//这里要将词条添加到company所在的索引
 //				news.setCompany(company);
 //				for(CompanyNews companyNews : newsList){

@@ -20,7 +20,7 @@ public class CreatePageController {
 	@RequestMapping("/createPage.do")
 	@ResponseBody
 	public SearchResult execute(String companyName, String scope, String start, String end, String dir){
-		List<CompanyNews> list = service.searchNews(companyName, scope, start, end);
+		List<CompanyNews> list = service.searchNews(companyName, scope, start, end, 500);
 		SearchResult result = service.createPage(list, dir, companyName); 
 		return result;
 	}

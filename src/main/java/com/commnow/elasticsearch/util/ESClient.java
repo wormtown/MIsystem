@@ -35,13 +35,18 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.sum.SumAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 
 import com.commnow.elasticsearch.bussiness.entity.CompanyNews;
 import com.commnow.elasticsearch.vo.ElasticsearchVo;
@@ -55,18 +60,22 @@ import jxl.write.WriteException;
 
 
 public class ESClient {
+	private final static String IP_ADDRESS = "103.36.136.225";
 	private static TransportClient client;
+	private static Settings settings;
 	
-    @SuppressWarnings({ "resource" })
+	
 	public ESClient(String ipAddress) {
-    	Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+    	settings = Settings.builder().put("cluster.name", "elasticsearch").put("xpack.security.user", "elastic:changeme").build();
 		try {
-			client = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ipAddress),9300));
+			if(client == null){
+				client = new PreBuiltXPackTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ipAddress),9300));
+			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 	}
-    
+	
     /**
 	 * 获取客户端
 	 * @return
@@ -76,9 +85,9 @@ public class ESClient {
 		if(client!=null){
 			return client;
 		}
-		Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+		settings = Settings.builder().put("cluster.name", "elasticsearch").put("xpack.security.user", "elastic:changeme").build();
 		try {
-			client = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("103.36.136.225"),9300));
+			client = new PreBuiltXPackTransportClient(settings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("103.36.136.225"),9300));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -116,12 +125,12 @@ public class ESClient {
     
     //聚合查询
     public Map<String,Long> sumSearch(){
+    	SearchRequestBuilder searchBuilder = client.prepareSearch("poms").setTypes("fetches");
     	Map<String, Long> resultMap = new HashMap<String,Long>(); 
-    	SearchRequestBuilder searchRequestBuilder = client.prepareSearch("poms").setTypes("fetches");
-    	searchRequestBuilder.setSize(5000);
+    	searchBuilder.setSize(20);
     	TermsAggregationBuilder field = AggregationBuilders.terms("newsCount").field("title.keyword").size(200);
-        searchRequestBuilder.addAggregation(field);
-        SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
+        searchBuilder.addAggregation(field);
+        SearchResponse searchResponse = searchBuilder.execute().actionGet();
         Map<String, Aggregation> aggMap = searchResponse.getAggregations().asMap();
         
         StringTerms gradeTerms = (StringTerms) aggMap.get("newsCount");
@@ -135,8 +144,32 @@ public class ESClient {
     	return resultMap;
     }
     
+    public Map<String, Long> statistic(String from, String to) throws ParseException{
+    	SearchRequestBuilder searchBuilder = client.prepareSearch("poms").setTypes("fetches");
+    	Map<String, Long> resultMap = new HashMap<String,Long>();
+    	//AggregationBuilder range = AggregationBuilders.dateRange("range").field("crawltime").format("yyyy-MM-dd").addRange(from,to);
+    	AggregationBuilder field =  AggregationBuilders.terms("dailyNewsCount").field("source_name.keyword").size(10);
+    	//searchBuilder.addAggregation(field);
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date fromDate = sdf.parse(from);
+		Date toDate = sdf.parse(to);
+    	searchBuilder.setQuery(QueryBuilders.boolQuery().must(QueryBuilders.rangeQuery("publish_date").from(fromDate.getTime()).to(toDate.getTime()))).addAggregation(field);
+        SearchResponse searchResponse = searchBuilder.execute().actionGet();
+		Map<String, Aggregation> aggMap = searchResponse.getAggregations().asMap();
+	    StringTerms gradeTerms = (StringTerms) aggMap.get("dailyNewsCount");
+	    Iterator<Bucket> gradeBucketIt = gradeTerms.getBuckets().iterator();
+	    
+	    while(gradeBucketIt.hasNext()){
+	       Bucket gradeBucket = gradeBucketIt.next();
+	       System.out.println(gradeBucket.getKeyAsString() + "这个媒体今天更新了" + gradeBucket.getDocCount() +"条新闻。");
+	       resultMap.put(gradeBucket.getKeyAsString(),gradeBucket.getDocCount());
+	    }
+    	
+    	return resultMap;
+    }
+    
     //重载的查询方法，加入时间过滤    
-    public List<CompanyNews> searchNewsByCompany(QueryBuilder queryBuilder, String indexName, String type, String from, String to){
+    public List<CompanyNews> searchNewsByCompany(QueryBuilder queryBuilder, String indexName, String type, String from, String to, int limit){
     	
     	List<CompanyNews> list = new ArrayList<CompanyNews>();
     	try {	
@@ -144,7 +177,7 @@ public class ESClient {
     			requestBuilder.setTypes(type);
     			requestBuilder.setQuery(queryBuilder);
     			//设置查询结果数量
-    			requestBuilder.setSize(5000);
+    			requestBuilder.setSize(limit);
     			//设置按时间过滤
     			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     			Date fromDate = sdf.parse(from);
@@ -184,12 +217,12 @@ public class ESClient {
 	    	} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	client.close();
+//    	client.close();
     	return list;
     }
     
     //无时间过滤的查询方法
-    public List<CompanyNews> searchNewsByCompany(QueryBuilder queryBuilder, String indexName, String type){
+    public List<CompanyNews> searchNewsByCompany(QueryBuilder queryBuilder, String indexName, String type, int limit){
     	
     	List<CompanyNews> list = new ArrayList<CompanyNews>();
     	try {	
@@ -197,7 +230,7 @@ public class ESClient {
     			requestBuilder.setTypes(type);
     			requestBuilder.setQuery(queryBuilder);
     			//设置查询结果数量
-    			requestBuilder.setSize(5000);
+    			requestBuilder.setSize(limit);
     			//设置精确查询
     			requestBuilder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
     			//设置按匹配度排序
@@ -241,7 +274,7 @@ public class ESClient {
 	    	} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	client.close();
+    	//client.close();
     	return list;
     }
     
@@ -252,15 +285,15 @@ public class ESClient {
      * @return
      */
     
-    public static List<CompanyNews> searchNewsList(ElasticsearchVo search, String scope){
+    public static List<CompanyNews> searchNewsList(ElasticsearchVo search, String scope, int limit){
     	List<CompanyNews> list = new ArrayList<CompanyNews>();
-		ESClient esClient = new ESClient("103.36.136.225");
+		ESClient esClient = new ESClient(IP_ADDRESS);
 		//"content"字段中关键字查询
 		QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(search.getCompany(),scope);
 		if(search.getFromDate() == "" || search.getToDate() == ""){
-			 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches");
+			 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", limit);
 		}else{
-			 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", search.getFromDate(), search.getToDate());
+			 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", search.getFromDate(), search.getToDate(),limit);
 		}
 		return list;
     }
@@ -274,13 +307,13 @@ public class ESClient {
     public static void searchFromContentAndWriteExcel(ElasticsearchVo search){
     	try {
     		List<CompanyNews> list = new ArrayList<CompanyNews>();
-			ESClient esClient = new ESClient("103.36.136.225");
+			ESClient esClient = new ESClient(IP_ADDRESS);
 			//"content"字段中关键字查询
 			QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(search.getCompany(),"content");
 			if(search.getFromDate() == null || search.getToDate() == null){
-				 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches");
+				 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", search.getLimit());
 			}else{
-				 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", search.getFromDate(), search.getToDate());
+				 list = esClient.searchNewsByCompany(queryBuilder, "poms", "fetches", search.getFromDate(), search.getToDate(), search.getLimit());
 			}
 			String diretory = "d:/news/new";
 			File dir = new File(diretory);
@@ -474,6 +507,7 @@ public class ESClient {
 	    		sb.append("<th>援引</th>");
 	    		sb.append("<th>标题</th>");
 	    		sb.append("<th>原文链接</th>");
+	    		sb.append("<th>生成简报</th>");
 	    		sb.append("</tr>");
 	    		sb.append("</thead>");
 	    		sb.append("<tbody>");
@@ -485,6 +519,7 @@ public class ESClient {
 		    			sb.append("<td>"+news.getSourceName()+"</td>");
 		    			sb.append("<td>"+news.getTitle()+"</td>");
 		    			sb.append("<td><a href='"+news.getUrl()+"'target='_blank'>点击查看原文</a></td>");
+		    			sb.append("<td><a href=#>点击生成简报</a></td>");
 		    			sb.append("</tr>");
 	    			}
 	    		}
@@ -616,14 +651,25 @@ public class ESClient {
 		return map;
 	}
 	
+	public static Map<String, Long> mediaUpdateStatistic(String from, String to){
+		ESClient esClient = new ESClient(IP_ADDRESS);
+		Map<String,Long> result = new HashMap<String, Long>();
+		try {
+			result = esClient.statistic(from, to);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public static void main(String[] args){
 //		ElasticsearchVo search = new ElasticsearchVo();
 //		search.setCompany("陶氏");
 //		search.setFromDate("2017-04-01");
-//		search.setToDate("2017-07-11");
-//		search.setCompany("霍尼韦尔");
-//		//search.setFromDate("2017-04-01");
-//		//search.setToDate("2017-05-01");
+//		search.setToDate("2017-08-01");
+//		search.setCompany("陶氏");
+//		search.setFromDate("2017-07-01");
+//		search.setToDate("2017-08-01");
 //		ESClient.searchFromContentAndWriteExcel(search);
 //		ESClient esClient = new ESClient("103.36.136.225");
 //		esClient.testGet();
@@ -633,9 +679,16 @@ public class ESClient {
 //		System.out.println(list);
 //		
 		
-		Map<String, Object> resultMap = ESClient.search("陶氏", "poms", "fetches", 0, 50);
-		List resultList = (List)resultMap.get("dataList");
-		System.out.println(resultList);
+//		Map<String, Object> resultMap = ESClient.search("陶氏", "poms", "fetches", 0, 50);
+//		List resultList = (List)resultMap.get("dataList");
+//		System.out.println(resultList);
+		ESClient esClient = new ESClient("103.36.136.225");
+		try {
+			esClient.statistic("2017-07-02", "2017-07-04");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
