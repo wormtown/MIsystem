@@ -118,11 +118,7 @@
 		    <artifactId>jxl</artifactId>
 		    <version>2.6.12</version>
 		</dependency>
-		<dependency>
-		    <groupId>com.hankcs</groupId>
-		    <artifactId>hanlp</artifactId>
-		    <version>portable-1.3.4</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -140,5 +136,6 @@
 		    <artifactId>mybatis</artifactId>
 		    <version>3.4.4</version>
 		</dependency>
+		
 	</dependencies>
 </project>

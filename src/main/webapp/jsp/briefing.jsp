@@ -1,5 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+  String path = request.getContextPath();
+  String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -13,31 +19,31 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 </script>
 <!-- Bootstrap Core CSS -->
-<link href="css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="<%=basePath%>css/bootstrap.css" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
-<link href="css/style.css" rel='stylesheet' type='text/css' />
+<link href="<%=basePath%>css/style.css" rel='stylesheet' type='text/css' />
 <!-- font CSS -->
 <!-- font-awesome icons -->
-<link href="css/font-awesome.css" rel="stylesheet"> 
+<link href="<%=basePath%>css/font-awesome.css" rel="stylesheet"> 
 <!-- //font-awesome icons -->
  <!-- js-->
-<script src="js/jquery-1.11.1.min.js"></script>
-<script src="js/modernizr.custom.js"></script>
+<script src="<%=basePath%>js/jquery-1.11.1.min.js"></script>
+<script src="<%=basePath%>js/modernizr.custom.js"></script>
 <!--webfonts-->
 <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
 <!--//webfonts--> 
 <!--animate-->
-<link href="css/animate.css" rel="stylesheet" type="text/css" media="all">
-<script src="js/wow.min.js"></script>
+<link href="<%=basePath%>css/animate.css" rel="stylesheet" type="text/css" media="all">
+<script src="<%=basePath%>js/wow.min.js"></script>
 	<script>
 		 new WOW().init();
 	</script>
 <!--//end-animate-->
 <!-- Metis Menu -->
-<script src="js/metisMenu.min.js"></script>
-<script src="js/custom.js"></script>
-<script src="script/search.js?version=201707110909"></script>
-<link href="css/custom.css" rel="stylesheet">
+<script src="<%=basePath%>js/metisMenu.min.js"></script>
+<script src="<%=basePath%>js/custom.js"></script>
+<script src="<%=basePath%>script/search.js?version=201707110909"></script>
+<link href="<%=basePath%>css/custom.css" rel="stylesheet">
 <script type="text/javascript">
 	$(function(){
 		$("#createPage").click(createPage);
@@ -60,7 +66,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 							<a href="#"><i class="fa fa-home nav_icon"></i>新闻检索<span class="fa arrow"></span></a>
 							<ul class="nav nav-second-level collapse">
 								<li>
-									<a href="index.html">客户服务</a>
+									<a href="../index.html">客户服务</a>
 								</li>
 								<li>
 									<a href="http://localhost:8080/CommnowMi/qiandu/newSearch.do">传声千度</a>
@@ -68,7 +74,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 							</ul>
 						</li>
 						<li>
-							<a href="hotnews.html"><i class="fa fa-home nav_icon"></i>热点新闻</a>
+							<a href="../hotnews.html"><i class="fa fa-home nav_icon"></i>热点新闻</a>
 						</li>
 						<li>
 							<a href="http://localhost:8080/CommnowMi/brief/briefing.do"><i class="fa fa-home nav_icon"></i>简报系统</a>
@@ -137,7 +143,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</li>
 								<li><a href="#">
-								   <div class="user_img"><img src="images/1.png" alt=""></div>
+								   <div class="user_img"><img src="<%=basePath%>images/1.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet</p>
 									<p><span>1 hour ago</span></p>
@@ -145,7 +151,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								   <div class="clearfix"></div>	
 								</a></li>
 								<li class="odd"><a href="#">
-									<div class="user_img"><img src="images/2.png" alt=""></div>
+									<div class="user_img"><img src="<%=basePath%>images/2.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -153,7 +159,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								  <div class="clearfix"></div>	
 								</a></li>
 								<li><a href="#">
-								   <div class="user_img"><img src="images/3.png" alt=""></div>
+								   <div class="user_img"><img src="<%=basePath%>images/3.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -176,7 +182,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</li>
 								<li><a href="#">
-									<div class="user_img"><img src="images/2.png" alt=""></div>
+									<div class="user_img"><img src="<%=basePath%>images/2.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet</p>
 									<p><span>1 hour ago</span></p>
@@ -184,7 +190,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								  <div class="clearfix"></div>	
 								 </a></li>
 								 <li class="odd"><a href="#">
-									<div class="user_img"><img src="images/1.png" alt=""></div>
+									<div class="user_img"><img src="<%=basePath%>images/1.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -192,7 +198,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								   <div class="clearfix"></div>	
 								 </a></li>
 								 <li><a href="#">
-									<div class="user_img"><img src="images/3.png" alt=""></div>
+									<div class="user_img"><img src="<%=basePath%>images/3.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -266,7 +272,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 						<li class="dropdown profile_details_drop">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 								<div class="profile_img">	
-									<span class="prfil-img"><img src="images/a.png" alt=""> </span> 
+									<span class="prfil-img"><img src="<%=basePath%>images/a.png" alt=""> </span> 
 									<div class="user-name">
 										<p>Wikolia</p>
 										<span>Administrator</span>
@@ -295,39 +301,44 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 						<div class="forms">
 							<div class="form-grids row widget-shadow" data-example-id="basic-forms"> 
 								<div class="form-title">
-									<h4>检索内容 :</h4>
+									<h4>简报 :</h4>
 								</div>
 								<div class="form-body" id="form-div">
 									<form>
-										 <div class="col-md-6 form-group"> 
-										  	<label for="exampleInputPassword1">时间</label> 
-										  	<input type="date" class="form-control" name="user_date" id="start"/> 
-										 </div> 
-										 
-										 <div class="col-md-6 form-group">
-										 	 <label for="selector1" class="col-md-2 control-label">公司</label>
-											 <div class="col-md-4">
-												 <select name="selector1" id="selector1" class="form-control1">
+										 <div style="margin-bottom:20px; border-bottom:1px dashed #ccc;">	
+											 <div class="col-md-6 form-group"> 
+											  	<label for="exampleInputPassword1">时间</label> 
+											  	<input type="date" class="form-control" name="user_date" id="start"/> 
+											 </div> 
+											 <div class="col-md-6 form-group">
+											 	 <label for="selector1">公司</label>
+												 <select name="selector1" id="selector1" class="form-control">
 													 <option>陶氏</option>
 													 <option>鑫达</option>
 												 </select>
 											 </div>
+											 <div class="clearfix"></div>
 										 </div>
 										 <c:forEach items="${blocks}" var="block">
-											 <div style="border-bottom:1px dashed #000;">
+											 <div style="border-bottom:1px dashed #ccc; margin-bottom:20px;">
 												 <div class="col-md-8 form-group">
-												  	<input type="text" class="form-control" id="scope" value="block.title">
+												  	<input type="text" class="form-control" id="scope" value="${block.title}">
 												 </div>
-												 <c:forEach items="block.relevantNews" var="bean">
-													 <div class="col-md-3 form-group">
-													  	<input type="text" class="form-control" id="scope" value="bean.source">
+												 <div class="col-md-8 form-group">
+												  	<input type="text" class="form-control" id="scope" value="${block.summary}">
+												 </div>
+												 <div class="clearfix"></div>
+												 <c:forEach items="${block.relevantNews}" var="bean">
+													 <div class="col-md-2 form-group">
+													  	<input type="text" class="form-control" id="scope" value="${bean.sourceName}">
 													 </div> 
 													 <div class="col-md-6 form-group">
-													  	<input type="text" class="form-control" id="scope" value="bean.title">
+													  	<input type="text" class="form-control" id="scope" value="${bean.title}">
 													 </div> 
-													 <div class="col-md-3 form-group">
-													  	<input type="text" class="form-control" id="scope" value="<fmt:formatDate value='bean.publishDate' type='date' pattern='yyyy-MM-dd'/>">
+													 <div class="col-md-2 form-group">
+													  	<input type="text" class="form-control" id="scope" value="<fmt:formatDate value='${bean.publishDate}' type='date' pattern='yyyy-MM-dd'/>">
 													 </div> 
+													 <div class="clearfix"></div>
 												 </c:forEach>
 											 </div>
 										 </c:forEach>
@@ -352,7 +363,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
         <!--//footer-->
 	
 	<!-- Classie -->
-		<script src="js/classie.js"></script>
+		<script src="<%=basePath%>js/classie.js"></script>
 		<script>
 			var menuLeft = document.getElementById( 'cbp-spmenu-s1' ),
 				showLeftPush = document.getElementById( 'showLeftPush' ),
@@ -372,10 +383,10 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 			}
 		</script>
 	<!--scrolling js-->
-	<script src="js/jquery.nicescroll.js"></script>
-	<script src="js/scripts.js"></script>
+	<script src="<%=basePath%>js/jquery.nicescroll.js"></script>
+	<script src="<%=basePath%>js/scripts.js"></script>
 	<!--//scrolling js-->
 	<!-- Bootstrap Core JavaScript -->
-   <script src="js/bootstrap.js"> </script>
+   <script src="<%=basePath%>js/bootstrap.js"> </script>
 </body>
 </html>

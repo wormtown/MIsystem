@@ -18,6 +18,7 @@ import com.commnow.elasticsearch.util.ESClient;
 import com.commnow.elasticsearch.util.SearchResult;
 import com.commnow.elasticsearch.vo.BriefingVo;
 import com.commnow.elasticsearch.vo.ElasticsearchVo;
+import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.suggest.Suggester;
 
 @Service
@@ -80,13 +81,13 @@ public class EsServiceImpl implements EsService{
 	 * suggestCount:推荐新闻限制条目数
 	 */
 	
-	public List<BriefingVo> briefing(String company, int limit, int days, int suggestCount) {
-		Map<String, CompanyNews> newsMap = new HashMap<String,CompanyNews>();
+	public List<BriefingVo> briefing(Date date, String company, int limit, int days, int suggestCount) {
+		Map<String,String> newsMap = new HashMap<String,String>();
 		Suggester suggester = new Suggester();
 		List<BriefingVo> resultList = new ArrayList<BriefingVo>(); 
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date();
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DAY_OF_MONTH,1);
@@ -110,12 +111,16 @@ public class EsServiceImpl implements EsService{
 		List<CompanyNews> relevantNews = ESClient.searchNewsList(search, "content", limit);
  		for(CompanyNews news : newsList){
 			String title = news.getTitle();
-			newsMap.put(title, news);
+			if(news.getContent().contains(company)){
+				List<String> summary = HanLP.extractSummary(news.getContent(), 5);
+				newsMap.put(title.trim(), summary.toString());
+			}
 		}
  		
  		for(String key : newsMap.keySet()) {
  		   BriefingVo newsBlock = new BriefingVo();
 		   newsBlock.setTitle(key);
+		   newsBlock.setSummary(newsMap.get(key));
 		   List<CompanyNews> rel = new ArrayList<CompanyNews>();
  		   for(CompanyNews relevant : relevantNews){
  			   //hanlp下的推荐方法suggest
@@ -137,7 +142,7 @@ public class EsServiceImpl implements EsService{
  		return resultList;
 	}
 		public static void main(String[] args) {
-			Map<String, CompanyNews> newsMap = new HashMap<String,CompanyNews>();
+			Map<String, String> newsMap = new HashMap<String,String>();
 			Suggester suggester = new Suggester();
 			List<BriefingVo> resultList = new ArrayList<BriefingVo>(); 
 			
@@ -167,7 +172,8 @@ public class EsServiceImpl implements EsService{
 	 		for(CompanyNews news : newsList){
 				String title = news.getTitle();
 				if(news.getContent().contains("陶氏")){
-					newsMap.put(title, news);
+					List<String> summary = HanLP.extractSummary(news.getContent(), 3);
+					newsMap.put(title, summary.toString());
 				}
 			}
 	 		

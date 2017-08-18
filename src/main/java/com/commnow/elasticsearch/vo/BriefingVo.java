@@ -8,10 +8,17 @@ public class BriefingVo {
 	
 	
 	private String title;
+	private String summary;
 	private List<CompanyNews> relevantNews;
 	
 	
 	
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
 	public String getTitle() {
 		return title;
 	}
