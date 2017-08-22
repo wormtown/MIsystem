@@ -235,11 +235,6 @@ public class ESClient {
     			requestBuilder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
     			//设置按匹配度排序
     			requestBuilder.setExplain(true);
-    			//设置高亮显示(写网页的时候用，写表格用不着)
-//    			HighlightBuilder highlightBuilder = new HighlightBuilder().field("*").requireFieldMatch(false);
-//    			highlightBuilder.preTags("<span style=\"color:red\">");
-//    			highlightBuilder.postTags("</span>");
-//    			requestBuilder.highlighter(highlightBuilder);
     	        //查询
 		    	SearchResponse searchResponse = requestBuilder.execute().actionGet();
 		    	SearchHits hits = searchResponse.getHits();
@@ -249,16 +244,7 @@ public class ESClient {
 		    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		    	if(searchHits.length>0){
 		    		for(SearchHit hit : searchHits){
-		    			//设置高亮域
-//		    			Map<String, HighlightField> highlightFields = hit.getHighlightFields();
-//		    			HighlightField titleField = highlightFields.get("title");
-//		    			//取得定义的高亮标签
-//		    			Text[] titleText = titleField.fragments();
 		    			String title = (String)hit.getSource().get("title");
-//		    			//给title加高亮标签
-//		    			 for(Text text : titleText){    
-//		                     title += text;  
-//		    			 }
 		    			CompanyNews news = new CompanyNews();
 		    			news.setSourceName((String)hit.getSource().get("source_name"));
 		    			news.setTitle(title);
@@ -274,7 +260,6 @@ public class ESClient {
 	    	} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	//client.close();
     	return list;
     }
     

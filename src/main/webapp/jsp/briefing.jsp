@@ -2,10 +2,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-  String path = request.getContextPath();
-  String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -19,31 +15,31 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 	addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } 
 </script>
 <!-- Bootstrap Core CSS -->
-<link href="<%=basePath%>css/bootstrap.css" rel='stylesheet' type='text/css' />
+<link href="${pageContext.request.contextPath}/css/bootstrap.css" rel='stylesheet' type='text/css' />
 <!-- Custom CSS -->
-<link href="<%=basePath%>css/style.css" rel='stylesheet' type='text/css' />
+<link href="${pageContext.request.contextPath}/css/style.css" rel='stylesheet' type='text/css' />
 <!-- font CSS -->
 <!-- font-awesome icons -->
-<link href="<%=basePath%>css/font-awesome.css" rel="stylesheet"> 
+<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet"> 
 <!-- //font-awesome icons -->
  <!-- js-->
-<script src="<%=basePath%>js/jquery-1.11.1.min.js"></script>
-<script src="<%=basePath%>js/modernizr.custom.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/modernizr.custom.js"></script>
 <!--webfonts-->
 <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
 <!--//webfonts--> 
 <!--animate-->
-<link href="<%=basePath%>css/animate.css" rel="stylesheet" type="text/css" media="all">
-<script src="<%=basePath%>js/wow.min.js"></script>
+<link href="${pageContext.request.contextPath}/css/animate.css" rel="stylesheet" type="text/css" media="all">
+<script src="${pageContext.request.contextPath}/js/wow.min.js"></script>
 	<script>
 		 new WOW().init();
 	</script>
 <!--//end-animate-->
 <!-- Metis Menu -->
-<script src="<%=basePath%>js/metisMenu.min.js"></script>
-<script src="<%=basePath%>js/custom.js"></script>
-<script src="<%=basePath%>script/search.js?version=201707110909"></script>
-<link href="<%=basePath%>css/custom.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/js/metisMenu.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/custom.js"></script>
+<script src="${pageContext.request.contextPath}/script/search.js?version=201707110909"></script>
+<link href="${pageContext.request.contextPath}/css/custom.css" rel="stylesheet">
 <script type="text/javascript">
 	$(function(){
 		$("#createPage").click(createPage);
@@ -69,7 +65,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 									<a href="../index.html">客户服务</a>
 								</li>
 								<li>
-									<a href="http://localhost:8080/CommnowMi/qiandu/newSearch.do">传声千度</a>
+									<a href="${pageContext.request.contextPath}/qiandu/newSearch.do">传声千度</a>
 								</li>
 							</ul>
 						</li>
@@ -77,7 +73,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 							<a href="../hotnews.html"><i class="fa fa-home nav_icon"></i>热点新闻</a>
 						</li>
 						<li>
-							<a href="http://localhost:8080/CommnowMi/brief/briefing.do"><i class="fa fa-home nav_icon"></i>简报系统</a>
+							<a href="${pageContext.request.contextPath}/brief/index.do"><i class="fa fa-home nav_icon"></i>简报系统</a>
 						</li>
 						<li>
 							<a href="http://test.smartpr.net.cn"><i class="fa fa-book nav_icon"></i>我的文档</a>
@@ -143,7 +139,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</li>
 								<li><a href="#">
-								   <div class="user_img"><img src="<%=basePath%>images/1.png" alt=""></div>
+								   <div class="user_img"><img src="${pageContext.request.contextPath}/images/1.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet</p>
 									<p><span>1 hour ago</span></p>
@@ -151,7 +147,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								   <div class="clearfix"></div>	
 								</a></li>
 								<li class="odd"><a href="#">
-									<div class="user_img"><img src="<%=basePath%>images/2.png" alt=""></div>
+									<div class="user_img"><img src="${pageContext.request.contextPath}/images/2.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -159,7 +155,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								  <div class="clearfix"></div>	
 								</a></li>
 								<li><a href="#">
-								   <div class="user_img"><img src="<%=basePath%>images/3.png" alt=""></div>
+								   <div class="user_img"><img src="${pageContext.request.contextPath}/images/3.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -182,7 +178,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 									</div>
 								</li>
 								<li><a href="#">
-									<div class="user_img"><img src="<%=basePath%>images/2.png" alt=""></div>
+									<div class="user_img"><img src="${pageContext.request.contextPath}/images/2.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet</p>
 									<p><span>1 hour ago</span></p>
@@ -190,7 +186,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								  <div class="clearfix"></div>	
 								 </a></li>
 								 <li class="odd"><a href="#">
-									<div class="user_img"><img src="<%=basePath%>images/1.png" alt=""></div>
+									<div class="user_img"><img src="${pageContext.request.contextPath}/images/1.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -198,7 +194,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								   <div class="clearfix"></div>	
 								 </a></li>
 								 <li><a href="#">
-									<div class="user_img"><img src="<%=basePath%>images/3.png" alt=""></div>
+									<div class="user_img"><img src="${pageContext.request.contextPath}/images/3.png" alt=""></div>
 								   <div class="notification_desc">
 									<p>Lorem ipsum dolor amet </p>
 									<p><span>1 hour ago</span></p>
@@ -272,7 +268,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 						<li class="dropdown profile_details_drop">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 								<div class="profile_img">	
-									<span class="prfil-img"><img src="<%=basePath%>images/a.png" alt=""> </span> 
+									<span class="prfil-img"><img src="${pageContext.request.contextPath}/images/a.png" alt=""> </span> 
 									<div class="user-name">
 										<p>Wikolia</p>
 										<span>Administrator</span>
@@ -305,50 +301,84 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 								</div>
 								<div class="form-body" id="form-div">
 									<form>
-										 <div style="margin-bottom:20px; border-bottom:1px dashed #ccc;">	
-											 <div class="col-md-6 form-group"> 
-											  	<label for="exampleInputPassword1">时间</label> 
-											  	<input type="date" class="form-control" name="user_date" id="start"/> 
-											 </div> 
-											 <div class="col-md-6 form-group">
-											 	 <label for="selector1">公司</label>
-												 <select name="selector1" id="selector1" class="form-control">
-													 <option>陶氏</option>
-													 <option>鑫达</option>
-												 </select>
-											 </div>
-											 <div class="clearfix"></div>
-										 </div>
-										 <c:forEach items="${blocks}" var="block">
+										 <c:forEach items="${blocks}" var="block" varStatus="b_status">
 											 <div style="border-bottom:1px dashed #ccc; margin-bottom:20px;">
 												 <div class="col-md-8 form-group">
-												  	<input type="text" class="form-control" id="scope" value="${block.title}">
+												  	<input type="text" class="form-control" id="block${b_status.index+1}" value="${b_status.index+1}. ${block.title}">
 												 </div>
+												 <div class="col-md-1 form-group">
+												 	<h4>
+														<a href="javascript:void(0)" onclick="setReadOnly(this)">
+															<input type="text" value="block${b_status.index+1}" style="display:none;">
+															<span class="label label-success">选中</span>
+														</a>
+													</h4>
+												 </div> 
 												 <div class="col-md-8 form-group">
-												  	<input type="text" class="form-control" id="scope" value="${block.summary}">
+												 	<textarea name="summary" id="summary${b_status.index+1}" cols="50" rows="6" class="form-control">${block.summary}</textarea>
 												 </div>
+												 <div class="col-md-1 form-group">
+												 	<h4>
+														<a href="javascript:void(0)" onclick="setReadOnly(this)">
+															<input type="text" value="summary${b_status.index+1}" style="display:none;">
+															<span class="label label-success">选中</span>
+														</a>
+													</h4>
+												 </div> 
+												 <div class="col-md-1 form-group">
+												 	<h4>
+														<a href="javascript:void(0)" onclick="showList(this)">
+															<input type="text" value="list${b_status.index+1}" style="display:none;">
+															<span class="label label-success">列表</span>
+														</a>
+													</h4>
+												 </div> 
 												 <div class="clearfix"></div>
-												 <c:forEach items="${block.relevantNews}" var="bean">
-													 <div class="col-md-2 form-group">
-													  	<input type="text" class="form-control" id="scope" value="${bean.sourceName}">
-													 </div> 
-													 <div class="col-md-6 form-group">
-													  	<input type="text" class="form-control" id="scope" value="${bean.title}">
-													 </div> 
-													 <div class="col-md-2 form-group">
-													  	<input type="text" class="form-control" id="scope" value="<fmt:formatDate value='${bean.publishDate}' type='date' pattern='yyyy-MM-dd'/>">
-													 </div> 
-													 <div class="clearfix"></div>
-												 </c:forEach>
+												 <div id="list${b_status.index+1}" class="hidden">
+													 <c:forEach items="${block.relevantNews}" var="bean" varStatus="status">
+														 <div class="col-md-2 form-group">
+														  	<input type="text" class="form-control" name="sourceName" value="${bean.sourceName}" readonly="">
+														 </div> 
+														 <div class="col-md-2 form-group">
+														  	<input type="text" class="form-control" name="publishDate" value="<fmt:formatDate value='${bean.publishDate}' type='date' pattern='yyyy-MM-dd'/>" readonly="">
+														 </div> 
+														 <div class="col-md-6 form-group">
+														  	<input type="text" class="form-control" name="title" value="${bean.title}" id="block${b_status.index+1}bean${status.index+1}">
+														 </div>
+														 <div class="col-md-1 form-group">
+														 	<h4>
+														 		<a href="${bean.url }" target="blank"><span class="label label-info">查看</span></a>
+															</h4>
+														 </div> 
+														 <div class="col-md-1 form-group">
+														 	<h4>
+																<a href="javascript:void(0)" onclick="setReadOnly(this)">
+																	<input type="text" value="block${b_status.index+1}bean${status.index+1}" style="display:none;">
+																	<span class="label label-success">选中</span>
+																</a>
+															</h4>
+														 </div> 
+														 <div class="clearfix"></div>
+													 </c:forEach>
+												 </div>
+												 <div class="col-md-1 form-group hidden" id="addlist${b_status.index+1}">
+													 	<h4>
+															<a href="javascript:void(0)" onclick="add(this)">
+																<input type="text" value="list${b_status.index+1}" style="display:none;">
+																<span class="label label-primary">添加</span>
+															</a>
+														</h4>
+												 	 </div>
+												 <div class="clearfix"></div> 
 											 </div>
 										 </c:forEach>
 										 <div class="clearfix"></div>
 										 <div style="text-align:right">
-										 	<button type="submit" class="btn btn-default" style="margin-right:1rem" id="preview">预览</button> 
+										 	<button type="submit" class="btn btn-default" style="margin-right:1rem" id="report">我要报错</button> 
+										 	<button type="submit" class="btn btn-default" style="margin-right:1rem" id="preview">预&nbsp;&nbsp;览</button> 
 										 	<button type="submit" class="btn btn-default" id="briefing">生成简报</button> 
 										 </div>	
 									</form> 
-									
 								</div>
 							</div>
 						</div>
@@ -363,7 +393,24 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
         <!--//footer-->
 	
 	<!-- Classie -->
-		<script src="<%=basePath%>js/classie.js"></script>
+		<style type="text/css">
+			.hidden{
+				display:none;
+			}
+			a:link{
+				text-decoration:none;
+			}
+			a:visited{
+				text-decoration:none;
+			}
+			a:hover{
+				text-decoration:none;
+			}
+			a:active{
+				text-decoration:none;
+			}
+		</style>
+		<script src="${pageContext.request.contextPath}/js/classie.js"></script>
 		<script>
 			var menuLeft = document.getElementById( 'cbp-spmenu-s1' ),
 				showLeftPush = document.getElementById( 'showLeftPush' ),
@@ -381,12 +428,61 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 					classie.toggle( showLeftPush, 'disabled' );
 				}
 			}
-		</script>
+			function setReadOnly(obj){
+				var text = $(obj).children('span').text();
+				var id = $(obj).children("input").val();
+				if(text == "编辑"){
+					$("#"+id).removeAttr("readonly");
+					$(obj).children('span').text("选中");
+				}else{
+					$("#"+id).attr("readonly","readonly");
+					$(obj).children('span').text("编辑");
+				}
+			}
+			function showList(obj){
+				var text = $(obj).children('span').text();
+				var id = $(obj).children("input").val();
+				if(text == "收起"){
+					$("#"+id).addClass("hidden");
+					$("#"+"add"+id).addClass("hidden");
+					$(obj).children('span').text("列表");
+				}else{
+					$("#"+id).removeClass("hidden");
+					$("#"+"add"+id).removeClass("hidden");
+					$(obj).children('span').text("收起");
+				}
+			}
+			function add(obj){
+				var str = '<div class="col-md-2 form-group">'+
+				  		  '<input type="text" class="form-control" name="sourceName" value="" palceholder="媒体">'+
+				 		  '</div>'+ 
+				 		  '<div class="col-md-2 form-group">'+
+				  		  '<input type="text" class="form-control" name="publishDate" value="" palceholder="发表时间">'+
+				 		  '</div>'+ 
+				 		  '<div class="col-md-6 form-group">'+
+				  		  '<input type="text" class="form-control" name="title" value="" id="" placeholder="标题">'+
+				 		  '</div>'+
+				 		  '<div class="col-md-1 form-group">'+
+				 		  '<input type="text" class="form-control" name="url" value="" id="" placeholder="链接">'+
+				 		  '</div>'+ 
+				 		  '<div class="col-md-1 form-group">'+
+				 		  '<h4>'+
+						  '<a href="javascript:void(0)" onclick="setReadOnly(this)">'+
+						  '<input type="text" value="" style="display:none;">'+
+						  '<span class="label label-success">选中</span>'+
+						  '</a>'+
+						  '</h4>'+
+				 		  '</div>'+ 
+				 		  '<div class="clearfix"></div>'
+				var id = $(obj).children("input").val();
+				$("#"+id).append(str);
+			}
+	</script>
 	<!--scrolling js-->
-	<script src="<%=basePath%>js/jquery.nicescroll.js"></script>
-	<script src="<%=basePath%>js/scripts.js"></script>
+	<script src="${pageContext.request.contextPath}/js/jquery.nicescroll.js"></script>
+	<script src="${pageContext.request.contextPath}/js/scripts.js"></script>
 	<!--//scrolling js-->
 	<!-- Bootstrap Core JavaScript -->
-   <script src="<%=basePath%>js/bootstrap.js"> </script>
+   <script src="${pageContext.request.contextPath}/js/bootstrap.js"> </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.commnow.elasticsearch.schedule;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +12,6 @@ import org.dom4j.Element;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.commnow.elasticsearch.bussiness.entity.CompanyNews;
-import com.commnow.elasticsearch.bussiness.entity.News;
 import com.commnow.elasticsearch.util.ESClient;
 import com.commnow.elasticsearch.util.XMLUtils;
 import com.commnow.elasticsearch.vo.ElasticsearchVo;
@@ -22,7 +22,7 @@ public class ScheduleJob {
 	private static Logger logger = Logger.getLogger(ScheduleJob.class);
 	//private News news = null;
 	
-	@Scheduled(cron="0 27 15 * * ?")
+	@Scheduled(cron="0 50 23 * * ?")
 	public void writeExcelAndPage(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
@@ -42,17 +42,6 @@ public class ScheduleJob {
 				search.setToDate(tomorrow);
 				search.setCompany(company);
 				List<CompanyNews> newsList = ESClient.searchNewsList(search,"content",5000);
-				//这里要将词条添加到company所在的索引
-//				news.setCompany(company);
-//				for(CompanyNews companyNews : newsList){
-//					news.setAuthor(companyNews.getAuthor().trim());
-//					news.setContent(companyNews.getContent().trim());
-//					news.setPublishDate(companyNews.getPublishDate());
-//					news.setSource(companyNews.getSourceName());
-//					news.setUrl(companyNews.getUrl());
-//					List<String> keywords = HanLP.extractKeyword(companyNews.getContent(), 10);
-//					news.setKeywords(keywords.toString());
-//				}
 				
 				String text = company;
 		        List<Pinyin> pinyinList = HanLP.convertToPinyinList(text);
@@ -63,7 +52,14 @@ public class ScheduleJob {
 		        	
 		        }
 				
-				String directory = XMLUtils.FILE_SERVER_DIRECTORY + today + "/"+companyDir+"/";
+		        Calendar date1 = Calendar.getInstance();
+		        String rootDir = XMLUtils.FILE_SERVER_DIRECTORY;
+		        
+		        File file = new File(rootDir + File.separator + date1.get(Calendar.YEAR)
+                + File.separator + (date1.get(Calendar.MONTH)+1) + File.separator
+                + date1.get(Calendar.DAY_OF_MONTH));
+		        
+				String directory = file.getAbsolutePath() + File.separator+companyDir+File.separator;
 				ESClient.createNewsExcel(newsList, directory, company);
 				ESClient.createNewsPage(newsList, directory, company);
 			}

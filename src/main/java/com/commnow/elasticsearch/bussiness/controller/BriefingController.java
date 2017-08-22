@@ -1,5 +1,7 @@
 package com.commnow.elasticsearch.bussiness.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.commnow.elasticsearch.bussiness.service.EsService;
 import com.commnow.elasticsearch.vo.BriefingVo;
@@ -18,11 +21,25 @@ public class BriefingController {
 	@Resource
 	EsService service;
 	
+	@RequestMapping("/index")
+	public String index(){
+		return "jsp/brief_index";
+	}
 	
 	@RequestMapping("/briefing")
-	public String execute(Model model){
-		Date date = new Date();
-		List<BriefingVo> blocks = service.briefing(date, "陶氏", 500, -10, 10);
+	public String execute(Model model,
+			@RequestParam(value="date",required = false) String date,
+			@RequestParam(value="company",required = false) String company,
+			@RequestParam(value="days",required = false) String days){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = null;
+		Integer days2 = Integer.parseInt(days);
+		try {
+			date1 = sdf.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		List<BriefingVo> blocks = service.briefing(date1, company, 500, days2, 10);
 		model.addAttribute("blocks",blocks);
 		return "jsp/briefing";
 	}
