@@ -131,6 +131,7 @@ public class EsServiceImpl implements EsService{
  		   for(String title : titles){
  			  for(CompanyNews relevant : relevantNews){
  				  if(title == relevant.getTitle()){
+ 					  relevant.setTitle(relevant.getTitle().trim());
  					  rel.add(relevant);
  				  }
  			  }

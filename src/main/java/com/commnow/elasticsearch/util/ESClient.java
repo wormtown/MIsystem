@@ -173,7 +173,7 @@ public class ESClient {
     	
     	List<CompanyNews> list = new ArrayList<CompanyNews>();
     	try {	
-    			SearchRequestBuilder requestBuilder = client.prepareSearch(indexName);
+    			SearchRequestBuilder requestBuilder = getClient().prepareSearch(indexName);
     			requestBuilder.setTypes(type);
     			requestBuilder.setQuery(queryBuilder);
     			//设置查询结果数量
@@ -226,7 +226,7 @@ public class ESClient {
     	
     	List<CompanyNews> list = new ArrayList<CompanyNews>();
     	try {	
-    			SearchRequestBuilder requestBuilder = client.prepareSearch(indexName);
+    			SearchRequestBuilder requestBuilder = getClient().prepareSearch(indexName);
     			requestBuilder.setTypes(type);
     			requestBuilder.setQuery(queryBuilder);
     			//设置查询结果数量

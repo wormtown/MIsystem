@@ -39,11 +39,14 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 <script src="${pageContext.request.contextPath}/js/metisMenu.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/custom.js"></script>
 <script src="${pageContext.request.contextPath}/script/search.js?version=201707110909"></script>
+<script src="${pageContext.request.contextPath}/script/briefing.js"></script>
 <link href="${pageContext.request.contextPath}/css/custom.css" rel="stylesheet">
 <script type="text/javascript">
+	var collection = [];
 	$(function(){
-		$("#createPage").click(createPage);
-		$("#createExcel").click(createExcel);
+		$("#report").click(report);
+		$("#preview").click(preview);
+		$("#briefing").click(briefing);
 	})
 </script>
 <!--//Metis Menu -->
@@ -315,13 +318,13 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 													</h4>
 												 </div> 
 												 <div class="col-md-8 form-group">
-												 	<textarea name="summary" id="summary${b_status.index+1}" cols="50" rows="6" class="form-control">${block.summary}</textarea>
+												 	<textarea name="summary" id="summary${b_status.index+1}" cols="50" rows="6" class="form-control block${b_status.index+1}">${block.summary}</textarea>
 												 </div>
 												 <div class="col-md-1 form-group">
 												 	<h4>
 														<a href="javascript:void(0)" onclick="setReadOnly(this)">
 															<input type="text" value="summary${b_status.index+1}" style="display:none;">
-															<span class="label label-success">选中</span>
+															<span class="label label-success block${b_status.index+1}span">选中</span>
 														</a>
 													</h4>
 												 </div> 
@@ -343,7 +346,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 														  	<input type="text" class="form-control" name="publishDate" value="<fmt:formatDate value='${bean.publishDate}' type='date' pattern='yyyy-MM-dd'/>" readonly="">
 														 </div> 
 														 <div class="col-md-6 form-group">
-														  	<input type="text" class="form-control" name="title" value="${bean.title}" id="block${b_status.index+1}bean${status.index+1}">
+														  	<input type="text" class="form-control block${b_status.index+1}" name="title" value="${bean.title}" id="block${b_status.index+1}bean${status.index+1}">
 														 </div>
 														 <div class="col-md-1 form-group">
 														 	<h4>
@@ -354,7 +357,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 														 	<h4>
 																<a href="javascript:void(0)" onclick="setReadOnly(this)">
 																	<input type="text" value="block${b_status.index+1}bean${status.index+1}" style="display:none;">
-																	<span class="label label-success">选中</span>
+																	<span class="label label-success block${b_status.index+1}span">选中</span>
 																</a>
 															</h4>
 														 </div> 
@@ -428,9 +431,16 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 					classie.toggle( showLeftPush, 'disabled' );
 				}
 			}
+			
+			
+			
 			function setReadOnly(obj){
 				var text = $(obj).children('span').text();
 				var id = $(obj).children("input").val();
+				if(id.indexOf('block')!=-1){
+					$("."+id).removeAttr("readonly");
+					$("."+id+"span").text("选中");
+				}
 				if(text == "编辑"){
 					$("#"+id).removeAttr("readonly");
 					$(obj).children('span').text("选中");
@@ -439,6 +449,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 					$(obj).children('span').text("编辑");
 				}
 			}
+			
 			function showList(obj){
 				var text = $(obj).children('span').text();
 				var id = $(obj).children("input").val();
@@ -452,6 +463,7 @@ SmartPhone Compatible web template, free WebDesigns for Nokia, Samsung, LG, Sony
 					$(obj).children('span').text("收起");
 				}
 			}
+			
 			function add(obj){
 				var str = '<div class="col-md-2 form-group">'+
 				  		  '<input type="text" class="form-control" name="sourceName" value="" palceholder="媒体">'+

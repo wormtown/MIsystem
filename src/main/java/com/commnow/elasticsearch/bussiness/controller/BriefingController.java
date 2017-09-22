@@ -31,14 +31,21 @@ public class BriefingController {
 			@RequestParam(value="date",required = false) String date,
 			@RequestParam(value="company",required = false) String company,
 			@RequestParam(value="days",required = false) String days){
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date1 = null;
-		Integer days2 = Integer.parseInt(days);
 		try {
-			date1 = sdf.parse(date);
+			if(date == null || date == ""){
+				Date today = new Date();
+				String dateStr = sdf.format(today);
+				date1 = sdf.parse(dateStr);
+			}else{
+				date1 = sdf.parse(date);
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		Integer days2 = Integer.parseInt(days);
 		List<BriefingVo> blocks = service.briefing(date1, company, 500, days2, 10);
 		model.addAttribute("blocks",blocks);
 		return "jsp/briefing";
